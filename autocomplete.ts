@@ -21,7 +21,7 @@ export interface AutocompleteSettings<T extends AutocompleteItem> {
     className?: string;
     minLength?: number;
     emptyMsg?: string;
-    onSelect: (item: T, input: HTMLInputElement) => void;
+    onSelect: (item: T, input: HTMLInputElement, ev: Event) => void;
     /**
      * Show autocomplete on focus event. Focus event will ignore the `minLength` property and will always call `fetch`.
      */
@@ -74,7 +74,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
     const mobileFirefox = userAgent.indexOf("Firefox") !== -1 && userAgent.indexOf("Mobile") !== -1;
     const debounceWaitMs = settings.debounceWaitMs || 0;
     const preventSubmit = settings.preventSubmit || false;
-    
+
     // 'keyup' event will not be fired on Mobile Firefox, so we have to use 'input' event instead
     const keyUpEventName = mobileFirefox ? "input" : "keyup";
     
@@ -244,7 +244,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
             const div = render(item, inputValue);
             if (div) {
                 div.addEventListener("click", function(ev: MouseEvent): void {
-                    settings.onSelect(item, input);
+                    settings.onSelect(item, input, ev);
                     clear();
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -407,7 +407,7 @@ export default function autocomplete<T extends AutocompleteItem>(settings: Autoc
 
         if (keyCode === Keys.Enter) {
             if (selected) {
-                settings.onSelect(selected, input);
+                settings.onSelect(selected, input, ev);
                 clear();
             }
     
